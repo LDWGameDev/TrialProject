@@ -23,13 +23,16 @@ class TRIALPROJECT_API UAnimInstance_PlayerHuman : public UAnimInstance
  */
 
 public:
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman")
 		float m_MovingSpeed;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman")
 		bool b_IsInAir;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman")
+		float m_ZVelocity;
 protected:
 
 private:
+	ACharacter_PlayerHuman* m_CharacterPlayerHumanREF;
 
 
 
@@ -44,5 +47,4 @@ public:
 protected:
 
 private:
-	ACharacter_PlayerHuman* m_CharacterPlayerHumanREF;
 };

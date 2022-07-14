@@ -35,5 +35,5 @@ void UAnimInstance_PlayerHuman::NativeUpdateAnimation(float DeltaSeconds)
 	if (m_CharacterPlayerHumanREF == nullptr) return;
 	m_MovingSpeed = m_CharacterPlayerHumanREF->m_CurrentMovingSpeed;
 	b_IsInAir = m_CharacterPlayerHumanREF->b_IsInAir;
+	m_ZVelocity = m_CharacterPlayerHumanREF->GetVelocity().Z;
 }
-
