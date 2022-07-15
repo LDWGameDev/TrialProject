@@ -22,6 +22,8 @@ class TRIALPROJECT_API IInterface_InputControl
 	GENERATED_BODY()
 
 public:
-	virtual void HandleInputAxis_MoveForward(float p_Value) = 0;
-	virtual void HandleInputAxis_MoveRight(float p_Value) = 0;
+	virtual void IFunc_HandleInputAxis_MoveForward(float p_Value) = 0;
+	virtual void IFunc_HandleInputAxis_MoveRight(float p_Value) = 0;
+	virtual void IFunc_HandleInputAction_JumpStart() = 0;
+	virtual void IFunc_HandleInputAction_Interact() = 0;
 };

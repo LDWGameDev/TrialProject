@@ -29,6 +29,8 @@ void APlayerController_PlayerHuman::SetupInputComponent()
 	InputComponent->BindAxis(FName(TEXT("MoveRight")), this, &APlayerController_PlayerHuman::HandleInputAxis_MoveRight);
 	InputComponent->BindAxis(FName(TEXT("LookUp")), this, &APlayerController_PlayerHuman::HandleInputAxis_LookUp);
 	InputComponent->BindAxis(FName(TEXT("LookRight")), this, &APlayerController_PlayerHuman::HandleInputAxis_LookRight);
+	InputComponent->BindAction(FName(TEXT("Jump")), EInputEvent::IE_Pressed, this, &APlayerController_PlayerHuman::HandleInputAction_JumpStart);
+	InputComponent->BindAction(FName(TEXT("Interact")), EInputEvent::IE_Pressed, this, &APlayerController_PlayerHuman::HandleInputAction_Interact);
 }
 
 void APlayerController_PlayerHuman::OnPossess(APawn* aPawn)
@@ -52,12 +54,12 @@ void APlayerController_PlayerHuman::OnUnPossess()
 
 void APlayerController_PlayerHuman::HandleInputAxis_MoveForward(float p_Value)
 {
-	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->HandleInputAxis_MoveForward(p_Value);
+	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->IFunc_HandleInputAxis_MoveForward(p_Value);
 }
 
 void APlayerController_PlayerHuman::HandleInputAxis_MoveRight(float p_Value)
 {
-	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->HandleInputAxis_MoveRight(p_Value);
+	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->IFunc_HandleInputAxis_MoveRight(p_Value);
 }
 
 void APlayerController_PlayerHuman::HandleInputAxis_LookUp(float p_Value)
@@ -68,6 +70,16 @@ void APlayerController_PlayerHuman::HandleInputAxis_LookUp(float p_Value)
 void APlayerController_PlayerHuman::HandleInputAxis_LookRight(float p_Value)
 {
 	AddYawInput(p_Value * m_MouseSensitive);
+}
+
+void APlayerController_PlayerHuman::HandleInputAction_JumpStart()
+{
+	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->IFunc_HandleInputAction_JumpStart();
+}
+
+void APlayerController_PlayerHuman::HandleInputAction_Interact()
+{
+	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->IFunc_HandleInputAction_Interact();
 }
 
 void APlayerController_PlayerHuman::HandleOnPossess(APawn* p_PossessedPawn)
