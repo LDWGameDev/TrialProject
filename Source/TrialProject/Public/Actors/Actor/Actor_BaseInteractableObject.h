@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Actors/Actor/Actor_BaseObject.h"
 #include "System/Interaction/Interface_InteractableObject.h"
+#include "Actors/EInteractableObjectType.h"
 #include "Actor_BaseInteractableObject.generated.h"
 
 class USphereComponent;
@@ -26,7 +28,8 @@ class TRIALPROJECT_API AActor_BaseInteractableObject : public AActor_BaseObject,
  */
 
 public:
-
+	UPROPERTY(EditDefaultsOnly, Category = "Custom BaseInteractableObject")
+		EInteractableObjectType m_InteractableObjectType;
 
 
 protected:
@@ -57,6 +60,7 @@ public:
 
 	// Interface_InteractableObject override functions
 	virtual void IFunc_TriggerInteraction(AActor* p_ActorInteract) override;
+	virtual EInteractableObjectType IFunc_GetInteractableObjectType() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -71,4 +75,14 @@ protected:
 
 private:
 
+
+
+
+
+
+public:
+	UFUNCTION(BlueprintCallable)
+		void TestFunction(int32 p_CommandID);
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+		FVector WorldLocationOfOffsetLocation(FVector p_OffsetLocation);
 };

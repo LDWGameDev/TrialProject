@@ -36,4 +36,12 @@ void UAnimInstance_PlayerHuman::NativeUpdateAnimation(float DeltaSeconds)
 	m_MovingSpeed = m_CharacterPlayerHumanREF->m_CurrentMovingSpeed;
 	b_IsInAir = m_CharacterPlayerHumanREF->b_IsInAir;
 	m_ZVelocity = m_CharacterPlayerHumanREF->GetVelocity().Z;
+	if (m_CharacterPlayerHumanREF->GetCurrentState() == EPlayerState::Locomotion && !b_IsInAir && m_MovingSpeed < 30.0f)
+	{
+		b_ShouldDoFootIK = true;
+	}
+	else 
+	{
+		b_ShouldDoFootIK = false;
+	}
 }

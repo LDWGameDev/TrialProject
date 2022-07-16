@@ -29,6 +29,8 @@ public:
 		bool b_IsInAir;
 	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman")
 		float m_ZVelocity;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman")
+		bool b_ShouldDoFootIK;
 protected:
 
 private:

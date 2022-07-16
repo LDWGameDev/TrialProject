@@ -23,6 +23,12 @@ class TRIALPROJECT_API AActor_InteractableBed : public AActor_BaseInteractableOb
  */
 
 public:
+	UPROPERTY(EditDefaultsOnly, Category = "Custom InteractableBed")
+		FVector m_InteractorOffsetLocation;
+	UPROPERTY(EditDefaultsOnly, Category = "Custom InteractableBed")
+		FRotator m_InteractorOffsetRotation;
+	UPROPERTY(EditDefaultsOnly, Category = "Custom InteractableBed")
+		float m_InteractorTransformSnappingTime;
 
 protected:
 

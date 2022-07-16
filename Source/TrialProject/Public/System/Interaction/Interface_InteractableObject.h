@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Actors/EInteractableObjectType.h"
 #include "Interface_InteractableObject.generated.h"
 
 
@@ -23,4 +24,5 @@ class TRIALPROJECT_API IInterface_InteractableObject
 
 public:
 	virtual void IFunc_TriggerInteraction(AActor* p_ActorInteract) = 0;
+	virtual EInteractableObjectType IFunc_GetInteractableObjectType() = 0;
 };

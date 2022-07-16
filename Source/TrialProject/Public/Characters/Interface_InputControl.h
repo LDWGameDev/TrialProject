@@ -26,4 +26,5 @@ public:
 	virtual void IFunc_HandleInputAxis_MoveRight(float p_Value) = 0;
 	virtual void IFunc_HandleInputAction_JumpStart() = 0;
 	virtual void IFunc_HandleInputAction_Interact() = 0;
+	virtual void IFunc_HandleInputAction_EndInteract() = 0;
 };

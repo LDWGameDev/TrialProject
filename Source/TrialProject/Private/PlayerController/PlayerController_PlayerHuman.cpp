@@ -31,6 +31,7 @@ void APlayerController_PlayerHuman::SetupInputComponent()
 	InputComponent->BindAxis(FName(TEXT("LookRight")), this, &APlayerController_PlayerHuman::HandleInputAxis_LookRight);
 	InputComponent->BindAction(FName(TEXT("Jump")), EInputEvent::IE_Pressed, this, &APlayerController_PlayerHuman::HandleInputAction_JumpStart);
 	InputComponent->BindAction(FName(TEXT("Interact")), EInputEvent::IE_Pressed, this, &APlayerController_PlayerHuman::HandleInputAction_Interact);
+	InputComponent->BindAction(FName(TEXT("EndInteract")), EInputEvent::IE_Pressed, this, &APlayerController_PlayerHuman::HandleInputAction_EndInteract);
 }
 
 void APlayerController_PlayerHuman::OnPossess(APawn* aPawn)
@@ -80,6 +81,11 @@ void APlayerController_PlayerHuman::HandleInputAction_JumpStart()
 void APlayerController_PlayerHuman::HandleInputAction_Interact()
 {
 	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->IFunc_HandleInputAction_Interact();
+}
+
+void APlayerController_PlayerHuman::HandleInputAction_EndInteract()
+{
+	if (m_CharacterInputControlInterfaceREF != nullptr) m_CharacterInputControlInterfaceREF->IFunc_HandleInputAction_EndInteract();
 }
 
 void APlayerController_PlayerHuman::HandleOnPossess(APawn* p_PossessedPawn)
