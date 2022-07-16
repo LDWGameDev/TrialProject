@@ -7,7 +7,7 @@
 #include "Components/WidgetComponent.h"
 
 #include "System/Interaction/Interface_InteractionCreator.h"
-
+#include "Library/CustomMathLibrary.h"
 
 
 
@@ -19,6 +19,7 @@ AActor_BaseInteractableObject::AActor_BaseInteractableObject()
 {
 	// Actor defaults
 	PrimaryActorTick.bCanEverTick = false;
+	m_InteractableObjectType = EInteractableObjectType::None;
 
 	// SphereComponent root defaults
 	m_SphereComponent_BaseRootCollision_01 = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent Root Collision 01"));
@@ -72,7 +73,12 @@ void AActor_BaseInteractableObject::Tick(float DeltaTime)
 
 void AActor_BaseInteractableObject::IFunc_TriggerInteraction(AActor* p_ActorInteract)
 {
+	m_WidgetComponent_InteractionDisplay_01->SetHiddenInGame(true);
+}
 
+EInteractableObjectType AActor_BaseInteractableObject::IFunc_GetInteractableObjectType()
+{
+	return m_InteractableObjectType;
 }
 
 
@@ -102,4 +108,26 @@ void AActor_BaseInteractableObject::HandleOnComponentExitOverlap_InteractionChec
 		InteractionCreator->IFunc_RemoveInteractableObject(this);
 		if (p_OtherActor == m_CurrentInteractionCreator) m_CurrentInteractionCreator = nullptr;
 	}
+}
+
+void AActor_BaseInteractableObject::TestFunction(int32 p_CommandID)
+{
+	switch (p_CommandID)
+	{
+	case 0:
+	{
+
+		break;
+	}
+	case 1:
+	{
+
+		break;
+	}
+	}
+}
+
+FVector AActor_BaseInteractableObject::WorldLocationOfOffsetLocation(FVector p_OffsetLocation)
+{
+	return CustomMathLibrary::WorldLocationOfRelativeLocationToActor(this, p_OffsetLocation);
 }

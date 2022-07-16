@@ -49,6 +49,7 @@ private:
 	void HandleInputAxis_LookRight(float p_Value);
 	void HandleInputAction_JumpStart();
 	void HandleInputAction_Interact();
+	void HandleInputAction_EndInteract();
 
 	// Handles OnPossess and OnUnPossess
 	void HandleOnPossess(APawn* p_PossessedPawn);

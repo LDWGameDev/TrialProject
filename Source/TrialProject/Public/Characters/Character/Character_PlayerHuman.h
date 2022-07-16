@@ -8,6 +8,7 @@
 
 #include "System/Interaction/Interface_InteractionCreator.h"
 #include "Characters/Interface_InputControl.h"
+#include "Characters/EPlayerState.h"
 #include "Actors/Interface_TransformControl.h"
 #include "Character_PlayerHuman.generated.h"
 
@@ -16,6 +17,8 @@ class UCameraComponent;
 class USpringArmComponent;
 class UAnimInstance_PlayerHuman;
 class UCurveFloat;
+class UDataTable;
+
 
 /**
  * 
@@ -32,8 +35,12 @@ class TRIALPROJECT_API ACharacter_PlayerHuman : public ACharacter, public IInter
  */
 	
 public:
+	// Float curve 
 	UPROPERTY(EditDefaultsOnly, Category = "Custom PlayerHuman")
 		UCurveFloat* m_CurveFloat_EaseInOutAlpha;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Custom PlayerHuman")
+		UDataTable* m_DataTable_Montages;
 
 	float m_CurrentMovingSpeed;
 	bool b_IsInAir;
@@ -64,6 +71,15 @@ private:
 	FRotator m_SavedRotation;
 	FRotator m_SavedNewRotation;
 
+	// Timeline controls CapsuleComponent size
+	FTimeline m_Timeline_CapsuleSizeControl;
+	float m_SavedCapsuleRadius;
+	float m_SavedNewCapsuleRadius;
+	float m_SavedCapsuleHalfHeight;
+	float m_SavedNewCapsuleHalfHeight;
+
+	EPlayerState m_CurrentState;
+
 
 /**
  * Functions
@@ -79,6 +95,7 @@ public:
 	virtual void IFunc_HandleInputAxis_MoveRight(float p_Value) override;
 	virtual void IFunc_HandleInputAction_JumpStart() override;
 	virtual void IFunc_HandleInputAction_Interact() override;
+	virtual void IFunc_HandleInputAction_EndInteract() override;
 
 	// Interface_InteractionCreator interface functions
 	virtual void IFunc_CanInteractNewObject(AActor* p_NewInteractableObject) override;
@@ -88,8 +105,21 @@ public:
 	virtual void IFunc_MoveToLocation(FVector p_NewLocation, float p_MoveTime) override;
 	virtual void IFunc_RotateToRotation(FRotator p_NewRotation, float p_RotateTime) override;
 
+	// Move to a new location using m_Timeline_LocationControl
 	void MoveToLocation(FVector p_NewLocation, float p_BlendTime);
+	
+	// Rotate to a rotation using m_Timeline_RotationControl
 	void RotateToRotation(FRotator p_NewRotation, float p_BlendTime);
+
+	// Change to new capsule size using m_Timeline_CapsuleSizeControl;
+	void ChangeCapsuleSize(float p_NewRadius, float p_NewHalfHeight, float p_BlendTime);
+
+	// Find and play AnimMontage from m_DataTable_Montage
+	void PlayAnimMontageFromTable(const FName& p_MontageID);
+
+	// StateMachine functions
+	void ChangeState(EPlayerState p_NewState);
+	EPlayerState GetCurrentState();
 
 protected:
 	virtual void BeginPlay() override;
