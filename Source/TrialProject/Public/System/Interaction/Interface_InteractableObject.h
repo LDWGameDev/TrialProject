@@ -25,4 +25,5 @@ class TRIALPROJECT_API IInterface_InteractableObject
 public:
 	virtual void IFunc_TriggerInteraction(AActor* p_ActorInteract) = 0;
 	virtual EInteractableObjectType IFunc_GetInteractableObjectType() = 0;
+	virtual FVector IFunc_GetInteractionLocation() = 0;
 };

@@ -45,7 +45,7 @@ ACharacter_PlayerHuman::ACharacter_PlayerHuman()
 	m_SpringArm_01->bInheritYaw = true;
 	m_SpringArm_01->TargetArmLength = 400.0f;
 	m_SpringArm_01->bEnableCameraLag = true;
-	m_SpringArm_01->CameraLagSpeed = 7.0f;
+	m_SpringArm_01->CameraLagSpeed = 10.0f;
 
 	// CameraComponent defaults
 	m_CameraComp_01 = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp 01"));
@@ -53,7 +53,7 @@ ACharacter_PlayerHuman::ACharacter_PlayerHuman()
 
 	// CharacterMovemmentComponent defaults
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 420.0f, 0.0f);
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 520.0f, 0.0f);
 	GetCharacterMovement()->GravityScale = 2.0f;
 	GetCharacterMovement()->AirControl = 0.4f;
 }
@@ -177,6 +177,60 @@ void ACharacter_PlayerHuman::IFunc_HandleInputAction_Interact()
 				}, 0.25f, false);
 			break;
 		}
+		case EInteractableObjectType::Button:
+		{
+			RotateToFaceTarget(m_CurrentInteractableObject, 0.25f);
+			FVector ButtonInteractionLocation = InteractableObject->IFunc_GetInteractionLocation();
+			
+			// Checks and plays button pushing montage
+			FVector PlayerFootLocation = GetActorLocation();
+			PlayerFootLocation.Z -= GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+			float ZOffset = ButtonInteractionLocation.Z - PlayerFootLocation.Z;
+			if (ZOffset < 100.0f)
+			{
+				PlayAnimMontageFromTable(FName(TEXT("PushButton_Low_01")));
+			}
+			else if (ZOffset < 170.0f)
+			{
+				PlayAnimMontageFromTable(FName(TEXT("PushButton_Medium_01")));
+			}
+			else
+			{
+				PlayAnimMontageFromTable(FName(TEXT("PushButton_High_01")));
+			}
+
+			// Right hand IK
+			SetRightHandIKLocation(ButtonInteractionLocation);
+			SetRightHandIKAlpha(1.0f, 0.5f);
+			break;
+		}
+		case EInteractableObjectType::PickUp:
+		{
+			RotateToFaceTarget(m_CurrentInteractableObject, 0.25f);
+			FVector ButtonInteractionLocation = InteractableObject->IFunc_GetInteractionLocation();
+
+			// Checks and plays button pushing montage
+			FVector PlayerFootLocation = GetActorLocation();
+			PlayerFootLocation.Z -= GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+			float ZOffset = ButtonInteractionLocation.Z - PlayerFootLocation.Z;
+			if (ZOffset < 100.0f)
+			{
+				PlayAnimMontageFromTable(FName(TEXT("PickUp_Low_01")));
+			}
+			else if (ZOffset < 170.0f)
+			{
+				PlayAnimMontageFromTable(FName(TEXT("PickUp_Medium_01")));
+			}
+			else
+			{
+				PlayAnimMontageFromTable(FName(TEXT("PickUp_High_01")));
+			}
+
+			// Right hand IK
+			SetRightHandIKLocation(ButtonInteractionLocation);
+			SetRightHandIKAlpha(1.0f, 0.5f);
+			break;
+		}
 		}
 	}
 }
@@ -264,6 +318,15 @@ void ACharacter_PlayerHuman::RotateToRotation(FRotator p_NewRotation, float p_Bl
 	}
 }
 
+void ACharacter_PlayerHuman::RotateToFaceTarget(AActor* p_FacingTarget, float p_BlendTime)
+{
+	if (p_FacingTarget == nullptr) return;
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), p_FacingTarget->GetActorLocation());
+	LookAtRotation.Pitch = 0.0f;
+	LookAtRotation.Roll = 0.0f;
+	RotateToRotation(LookAtRotation, p_BlendTime);
+}
+
 void ACharacter_PlayerHuman::ChangeCapsuleSize(float p_NewRadius, float p_NewHalfHeight, float p_BlendTime)
 {
 	if (p_NewHalfHeight <= 0.0f || p_NewHalfHeight < p_NewRadius) return;
@@ -301,6 +364,38 @@ void ACharacter_PlayerHuman::ChangeState(EPlayerState p_NewState)
 EPlayerState ACharacter_PlayerHuman::GetCurrentState()
 {
 	return m_CurrentState;
+}
+
+void ACharacter_PlayerHuman::SetRightHandIKAlpha(float p_NewAlpha, float p_BlendTime)
+{
+	if (m_AnimInstancePlayerHumanREF == nullptr) return;
+	if (p_BlendTime <= 0.0f)
+	{
+		m_AnimInstancePlayerHumanREF->m_RightHandIKAlpha = FMath::Clamp(p_NewAlpha, 0.0f, 1.0f);
+	}
+	else
+	{
+		m_SavedRightHandIKAlpha = m_AnimInstancePlayerHumanREF->m_RightHandIKAlpha;
+		m_SavedNewRightHandIKAlpha = FMath::Clamp(p_NewAlpha, 0.0f, 1.0f);
+		m_Timeline_RightHandIKAlphaControl.SetPlayRate(1.0f / p_BlendTime);
+		m_Timeline_RightHandIKAlphaControl.PlayFromStart();
+	}
+}
+
+void ACharacter_PlayerHuman::SetRightHandIKLocation(const FVector p_NewLocation)
+{
+	if (m_AnimInstancePlayerHumanREF == nullptr) return;
+	m_AnimInstancePlayerHumanREF->m_RightHandIKLocation = p_NewLocation;
+}
+
+void ACharacter_PlayerHuman::PickUpCurrentInteractableObject()
+{
+	IInterface_InteractableObject* InteractableObject = Cast<IInterface_InteractableObject>(m_CurrentInteractableObject);
+	if (InteractableObject != nullptr && InteractableObject->IFunc_GetInteractableObjectType() == EInteractableObjectType::PickUp)
+	{
+		m_CurrentInteractableObject->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("Socket_PickUpHolding")));
+	}
+	SetRightHandIKAlpha(0.0f, 0.5f);
 }
 
 
@@ -357,6 +452,19 @@ void ACharacter_PlayerHuman::InitTimelines()
 	m_Timeline_CapsuleSizeControl.AddInterpFloat(m_CurveFloat_EaseInOutAlpha, OnTimelineFloat_CapsuleSizeControl_01);
 	m_Timeline_CapsuleSizeControl.SetTimelineLength(1.0f);
 	m_Timeline_CapsuleSizeControl.SetLooping(false);
+
+	// Create m_Timeline_RightHandIKAlphaControl
+	FOnTimelineFloatStatic OnTimelineFloat_RightHandIKAlphaControl;
+	OnTimelineFloat_RightHandIKAlphaControl.BindLambda([&](float p_Value)
+		{
+			if (m_AnimInstancePlayerHumanREF != nullptr)
+			{
+				m_AnimInstancePlayerHumanREF->m_RightHandIKAlpha = FMath::Lerp(m_SavedRightHandIKAlpha, m_SavedNewRightHandIKAlpha, p_Value);
+			}
+		});
+	m_Timeline_RightHandIKAlphaControl.AddInterpFloat(m_CurveFloat_EaseInOutAlpha, OnTimelineFloat_RightHandIKAlphaControl);
+	m_Timeline_RightHandIKAlphaControl.SetTimelineLength(1.0f);
+	m_Timeline_RightHandIKAlphaControl.SetLooping(false);
 }
 
 void ACharacter_PlayerHuman::TickTimelines(float p_DeltaTime)
@@ -364,6 +472,7 @@ void ACharacter_PlayerHuman::TickTimelines(float p_DeltaTime)
 	m_Timeline_LocationControl.TickTimeline(p_DeltaTime);
 	m_Timeline_RotationControl.TickTimeline(p_DeltaTime);
 	m_Timeline_CapsuleSizeControl.TickTimeline(p_DeltaTime);
+	m_Timeline_RightHandIKAlphaControl.TickTimeline(p_DeltaTime);
 }
 
 
@@ -383,13 +492,19 @@ void ACharacter_PlayerHuman::TestFunction(int p_CommandID)
 	{
 	case 0:
 	{
-		ChangeCapsuleSize(10.0f, 96.0f, 0.5f);
+		SetRightHandIKAlpha(0.0f, 1.0f);
 		break;
 	}
 	case 1:
 	{
-		ChangeCapsuleSize(38.0f, 96.0f, 0.5f);
+		SetRightHandIKAlpha(0.0f, 1.0f);
 		break;
 	}
 	}
+}
+
+void ACharacter_PlayerHuman::TestRightHandIK(FVector p_RightHandIKLocation)
+{
+	SetRightHandIKLocation(p_RightHandIKLocation);
+	SetRightHandIKAlpha(1.0f, 1.0f);
 }
