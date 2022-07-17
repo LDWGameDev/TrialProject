@@ -18,7 +18,7 @@
 AActor_BaseInteractableObject::AActor_BaseInteractableObject()
 {
 	// Actor defaults
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	m_InteractableObjectType = EInteractableObjectType::None;
 
 	// SphereComponent root defaults
@@ -79,6 +79,11 @@ void AActor_BaseInteractableObject::IFunc_TriggerInteraction(AActor* p_ActorInte
 EInteractableObjectType AActor_BaseInteractableObject::IFunc_GetInteractableObjectType()
 {
 	return m_InteractableObjectType;
+}
+
+FVector AActor_BaseInteractableObject::IFunc_GetInteractionLocation()
+{
+	return GetActorLocation();
 }
 
 

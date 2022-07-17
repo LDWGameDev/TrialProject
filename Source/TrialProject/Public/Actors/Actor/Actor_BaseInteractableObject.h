@@ -21,7 +21,6 @@ UCLASS()
 class TRIALPROJECT_API AActor_BaseInteractableObject : public AActor_BaseObject, public IInterface_InteractableObject
 {
 	GENERATED_BODY()
-	
 
 /**
  * Properties
@@ -61,6 +60,7 @@ public:
 	// Interface_InteractableObject override functions
 	virtual void IFunc_TriggerInteraction(AActor* p_ActorInteract) override;
 	virtual EInteractableObjectType IFunc_GetInteractableObjectType() override;
+	virtual FVector IFunc_GetInteractionLocation() override;
 
 protected:
 	virtual void BeginPlay() override;

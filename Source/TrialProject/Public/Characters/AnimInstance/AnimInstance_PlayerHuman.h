@@ -31,6 +31,11 @@ public:
 		float m_ZVelocity;
 	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman")
 		bool b_ShouldDoFootIK;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman IK")
+		float m_RightHandIKAlpha;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom AnimInstancePlayerHuman IK")
+		FVector m_RightHandIKLocation;
+
 protected:
 
 private:
@@ -46,6 +51,13 @@ public:
 	UAnimInstance_PlayerHuman();
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
+
+	UFUNCTION(BlueprintCallable)
+		void ResetRightHandIKAlpha(float p_BlendTime);
+
+	UFUNCTION(BlueprintCallable)
+		void PickUpItem();
+
 protected:
 
 private:

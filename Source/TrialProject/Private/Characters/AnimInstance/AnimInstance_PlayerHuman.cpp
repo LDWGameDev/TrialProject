@@ -45,3 +45,15 @@ void UAnimInstance_PlayerHuman::NativeUpdateAnimation(float DeltaSeconds)
 		b_ShouldDoFootIK = false;
 	}
 }
+
+void UAnimInstance_PlayerHuman::ResetRightHandIKAlpha(float p_BlendTime)
+{
+	if (m_CharacterPlayerHumanREF == nullptr) return;
+	m_CharacterPlayerHumanREF->SetRightHandIKAlpha(0.0f, p_BlendTime);
+}
+
+void UAnimInstance_PlayerHuman::PickUpItem()
+{
+	if (m_CharacterPlayerHumanREF == nullptr) return;
+	m_CharacterPlayerHumanREF->PickUpCurrentInteractableObject();
+}

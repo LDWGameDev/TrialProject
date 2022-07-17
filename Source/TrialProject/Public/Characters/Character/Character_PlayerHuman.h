@@ -78,6 +78,11 @@ private:
 	float m_SavedCapsuleHalfHeight;
 	float m_SavedNewCapsuleHalfHeight;
 
+	// Timeline controls RightHandIKAlpha in AnimInstance_PlayerHuman
+	FTimeline m_Timeline_RightHandIKAlphaControl;
+	float m_SavedRightHandIKAlpha;
+	float m_SavedNewRightHandIKAlpha;
+
 	EPlayerState m_CurrentState;
 
 
@@ -110,6 +115,7 @@ public:
 	
 	// Rotate to a rotation using m_Timeline_RotationControl
 	void RotateToRotation(FRotator p_NewRotation, float p_BlendTime);
+	void RotateToFaceTarget(AActor* p_FacingTarget, float p_BlendTime);
 
 	// Change to new capsule size using m_Timeline_CapsuleSizeControl;
 	void ChangeCapsuleSize(float p_NewRadius, float p_NewHalfHeight, float p_BlendTime);
@@ -120,6 +126,12 @@ public:
 	// StateMachine functions
 	void ChangeState(EPlayerState p_NewState);
 	EPlayerState GetCurrentState();
+
+	// 
+	void SetRightHandIKAlpha(float p_NewAlpha, float p_BlendTime);
+	void SetRightHandIKLocation(const FVector p_NewLocation);
+
+	void PickUpCurrentInteractableObject();
 
 protected:
 	virtual void BeginPlay() override;
@@ -139,4 +151,6 @@ private:
 public: 
 	UFUNCTION(BlueprintCallable)
 		void TestFunction(int p_CommandID);
+	UFUNCTION(BlueprintCallable)
+		void TestRightHandIK(FVector p_RightHandIKLocation);
 };
