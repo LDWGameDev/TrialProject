@@ -13,6 +13,7 @@
 #include "Characters/FMontageToPlay.h"
 #include "System/Interaction/Interface_InteractableObject.h"
 #include "Characters/AnimInstance/AnimInstance_PlayerHuman.h"
+#include "Actors/Actor/Actor_PickUpObject.h"
 #include "Actors/EInteractableObjectType.h"
 
 
@@ -252,6 +253,14 @@ void ACharacter_PlayerHuman::IFunc_HandleInputAction_EndInteract()
 		ChangeState(EPlayerState::Locomotion);
 		break;
 	}
+	default:
+	{
+		if (m_CurrentHoldingObject != nullptr)
+		{
+			m_CurrentHoldingObject->DisablePickingUp();
+		}
+		break;
+	}
 	}
 }
 
@@ -390,10 +399,12 @@ void ACharacter_PlayerHuman::SetRightHandIKLocation(const FVector p_NewLocation)
 
 void ACharacter_PlayerHuman::PickUpCurrentInteractableObject()
 {
-	IInterface_InteractableObject* InteractableObject = Cast<IInterface_InteractableObject>(m_CurrentInteractableObject);
-	if (InteractableObject != nullptr && InteractableObject->IFunc_GetInteractableObjectType() == EInteractableObjectType::PickUp)
+	AActor_PickUpObject* PickUpObject = Cast<AActor_PickUpObject>(m_CurrentInteractableObject);
+	if (PickUpObject != nullptr)
 	{
-		m_CurrentInteractableObject->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("Socket_PickUpHolding")));
+		m_CurrentHoldingObject = PickUpObject;
+		PickUpObject->EnablePickingUp();
+		PickUpObject->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("Socket_PickUpHolding")));
 	}
 	SetRightHandIKAlpha(0.0f, 0.5f);
 }

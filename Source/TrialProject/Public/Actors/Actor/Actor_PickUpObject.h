@@ -36,6 +36,10 @@ public:
 	// Interface_InteractableObject functions
 	virtual FVector IFunc_GetInteractionLocation() override;
 
+	// 
+	void EnablePickingUp();
+	void DisablePickingUp();
+
 protected:
 private:
 

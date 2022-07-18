@@ -18,6 +18,7 @@ class USpringArmComponent;
 class UAnimInstance_PlayerHuman;
 class UCurveFloat;
 class UDataTable;
+class AActor_PickUpObject;
 
 
 /**
@@ -58,6 +59,9 @@ private:
 	// Current actor to interact with. Set and remove value using functions of Interface_InteractionCreator
 	UPROPERTY()
 		AActor* m_CurrentInteractableObject;
+	// Current holding object AActor_PickUpObject type
+	UPROPERTY()
+		AActor_PickUpObject* m_CurrentHoldingObject;
 
 	const float c_JumpForce = 800.0f;
 
@@ -84,6 +88,7 @@ private:
 	float m_SavedNewRightHandIKAlpha;
 
 	EPlayerState m_CurrentState;
+
 
 
 /**
